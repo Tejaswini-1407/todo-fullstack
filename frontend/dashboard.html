@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Tasks — To-Do’s</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(180deg,#fbe4e6,#f6cfd2);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card{
+  background:#fff;
+  width:420px;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+
+.brand{
+  font-family:'Pacifico',cursive;
+  font-size:28px;
+  text-align:center;
+  color:#e2556f;
+  margin-bottom:5px;
+}
+
+.subtitle{
+  text-align:center;
+  font-size:14px;
+  color:#777;
+  margin-bottom:25px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.header span{font-weight:600}
+
+.logout{
+  background:none;
+  border:none;
+  color:#e2556f;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.add-task{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.add-task input{
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
+}
+
+.add-task button{
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#e2556f;
+  color:#fff;
+  cursor:pointer;
+}
+
+ul{list-style:none}
+
+.task{
+  background:#f9f2f3;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  animation:fadeIn 0.3s ease;
+}
+
+.task.done strong{
+  text-decoration:line-through;
+  color:#999;
+}
+
+.task small{
+  font-size:12px;
+  color:#e2556f;
+}
+
+.actions{
+  margin-top:8px;
+}
+
+.actions button{
+  background:none;
+  border:none;
+  cursor:pointer;
+  margin-right:6px;
+  font-size:16px;
+}
+.modal-box h3{
+  color:#e2556f;
+  margin-bottom:10px;
+}
+
+.modal-box input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  margin-bottom:10px;
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.btn-primary{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:#e2556f;
+  color:#fff;
+  cursor:pointer;
+}
+
+.btn-secondary{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:#eee;
+  cursor:pointer;
+}
+
+.btn-danger{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:#e2556f;
+  color:#fff;
+  cursor:pointer;
+}
+
+.task.overdue{
+background:#ffe6e6;
+border-left:5px solid #ff4d4d;
+}
+
+/* MODALS — SAME STYLE */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center}
+.modal-box{background:#fff;width:300px;padding:20px;border-radius:16px;text-align:center}
+.hidden{display:none}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="brand">To-Do’s</div>
+  <div class="subtitle">Your daily tasks, simplified</div>
+
+  <div class="header">
+    <span>Hello, <span id="username"></span></span>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- ✅ NEW INPUTS -->
+  <div class="add-task">
+    <input id="taskInput" placeholder="Task title">
+    <input id="descInput" placeholder="Task description">
+    <input id="dateInput" type="date" placeholder="Deadline">
+    <button onclick="addTask()">Add Task</button>
+  </div>
+
+  <div style="margin-bottom:15px">
+
+<div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px">
+<span>Total: <b id="totalTasks">0</b></span>
+<span>Completed: <b id="completedTasks">0</b></span>
+<span>Pending: <b id="pendingTasks">0</b></span>
+</div>
+
+<div style="width:100%;height:10px;background:#eee;border-radius:10px">
+<div id="progressBar" style="height:10px;width:0%;background:#e2556f;border-radius:10px"></div>
+</div>
+
+</div>
+
+  <ul id="taskList"></ul>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Edit Task</h3>
+    <input id="editTitle">
+    <input id="editDesc">
+    <input id="editDate" type="date">
+    <br><br>
+    <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeEdit()">Cancel</button>
+        <button class="btn-primary" onclick="saveEdit()">Save</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Delete Task?</h3>
+    <div class="modal-actions">
+       <button class="btn-secondary" onclick="closeDelete()">No</button>
+       <button class="btn-danger" onclick="confirmDelete()">Yes</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.getElementById("taskInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+addTask()
+}
+})
+
+if(!localStorage.getItem("userId")){
+window.location="login.html"
+}
+
+
+const user = JSON.parse(localStorage.getItem("user"))
+
+if(user){
+document.getElementById("username").innerText=user.name
+}
+
+let editTaskId=null
+let deleteTaskId=null
+
+
+async function addTask(){
+const title=document.getElementById("taskInput").value.trim()
+
+if(title===""){
+alert("Task title cannot be empty")
+return
+}
+
+const task={
+userId:localStorage.getItem("userId"),
+title:document.getElementById("taskInput").value,
+description:document.getElementById("descInput").value,
+deadline:document.getElementById("dateInput").value
+}
+
+await fetch("http://localhost:5000/api/tasks",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(task)
+})
+
+document.getElementById("taskInput").value=""
+document.getElementById("descInput").value=""
+document.getElementById("dateInput").value=""
+
+loadTasks()
+
+}
+
+
+async function loadTasks(){
+
+const userId=localStorage.getItem("userId")
+
+const res=await fetch(`http://localhost:5000/api/tasks/${userId}`)
+
+let tasks=await res.json()
+
+const total = tasks.length
+const completed = tasks.filter(t => t.completed).length
+const pending = total - completed
+
+document.getElementById("totalTasks").innerText = total
+document.getElementById("completedTasks").innerText = completed
+document.getElementById("pendingTasks").innerText = pending
+
+let percent = 0
+
+if(total > 0){
+percent = (completed / total) * 100
+}
+
+document.getElementById("progressBar").style.width = percent + "%"
+
+tasks.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))
+
+const list=document.getElementById("taskList")
+
+list.innerHTML=""
+
+if(tasks.length === 0){
+list.innerHTML = "<p style='text-align:center;color:#777'>No tasks yet. Add one above ✨</p>"
+return
+}
+
+tasks.forEach(t=>{
+
+const li=document.createElement("li")
+
+li.className="task"
+
+const today = new Date().toISOString().split("T")[0]
+
+if(t.deadline && t.deadline < today && !t.completed){
+li.classList.add("overdue")
+}
+if(t.completed){
+li.classList.add("done")
+}
+
+li.innerHTML=`
+<strong>${t.title}</strong><br>
+${t.description || ""}<br>
+<small>
+${t.deadline || ""} 
+${t.deadline && t.deadline < new Date().toISOString().split("T")[0] && !t.completed ? "❗ OVERDUE" : ""}
+</small>
+
+<div class="actions">
+<button onclick="toggleComplete('${t._id}',${t.completed})">✔️</button>
+<button onclick="openEdit('${t._id}','${t.title}','${t.description}','${t.deadline}')">✏️</button>
+<button onclick="openDelete('${t._id}')">🗑️</button>
+</div>
+`
+
+list.appendChild(li)
+
+})
+
+}
+
+
+async function toggleComplete(id,status){
+
+await fetch(`http://localhost:5000/api/tasks/${id}`,{
+method:"PUT",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({completed:!status})
+})
+
+loadTasks()
+
+}
+
+
+function openEdit(id,title,desc,date){
+
+editTaskId=id
+
+document.getElementById("editTitle").value=title
+document.getElementById("editDesc").value=desc
+document.getElementById("editDate").value=date
+
+document.getElementById("editModal").classList.remove("hidden")
+
+}
+
+function closeEdit(){
+document.getElementById("editModal").classList.add("hidden")
+}
+
+
+async function saveEdit(){
+
+const updatedTask={
+title:document.getElementById("editTitle").value,
+description:document.getElementById("editDesc").value,
+deadline:document.getElementById("editDate").value
+}
+
+await fetch(`http://localhost:5000/api/tasks/${editTaskId}`,{
+method:"PUT",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(updatedTask)
+})
+
+closeEdit()
+loadTasks()
+
+}
+
+
+function openDelete(id){
+
+deleteTaskId=id
+
+document.getElementById("deleteModal").classList.remove("hidden")
+
+}
+
+function closeDelete(){
+document.getElementById("deleteModal").classList.add("hidden")
+}
+
+
+async function confirmDelete(){
+
+await fetch(`http://localhost:5000/api/tasks/${deleteTaskId}`,{
+method:"DELETE"
+})
+
+closeDelete()
+loadTasks()
+
+}
+
+
+function logout(){
+
+localStorage.removeItem("token")
+localStorage.removeItem("user")
+localStorage.removeItem("userId")
+
+window.location="login.html"
+
+}
+
+loadTasks()
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do’s — A calm way to organize tasks</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(180deg,#fbe4e6,#f6cfd2);
+  color:#3a2f2f;
+  overflow-x:hidden;
+}
+
+/* NAVBAR */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:18px 10%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(251,228,230,.95);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+
+.brand{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+}
+
+.brand-name{
+  font-family:'Pacifico',cursive;
+  font-size:2rem;
+}
+
+.brand-tagline{
+  font-size:.9rem;
+  color:#6a4f4f;
+}
+
+nav ul{
+  list-style:none;
+  display:flex;
+  gap:26px;
+  align-items:center;
+}
+
+nav a{
+  text-decoration:none;
+  color:#3a2f2f;
+  font-weight:500;
+}
+
+.auth-btn{
+  padding:6px 14px;
+  border-radius:14px;
+  background:#b05c5c;
+  color:white;
+  font-size:.85rem;
+}
+
+/* SECTIONS */
+section{
+  padding:90px 10%;
+  scroll-margin-top:90px;
+}
+
+h2{
+  font-size:2.7rem;
+  margin-bottom:14px;
+}
+
+h3{
+  font-size:1.9rem;
+  margin-bottom:16px;
+}
+
+h4{
+  font-size:1.05rem;
+  margin-bottom:6px;
+}
+
+p{
+  line-height:1.7;
+  color:#5a4a4a;
+}
+
+/* HERO */
+.hero{
+  min-height:85vh;
+  display:flex;
+  align-items:center;
+}
+
+.hero p{
+  max-width:580px;
+  font-size:1.15rem;
+}
+
+.info-line{
+  display:flex;
+  gap:22px;
+  margin-top:24px;
+  font-size:.9rem;
+  flex-wrap:wrap;
+}
+
+/* DIVIDER */
+.divider{
+  margin:35px 0 55px;
+  opacity:.35;
+}
+
+.divider svg{
+  width:100%;
+  height:80px;
+}
+
+/* HOW IT WORKS */
+.flow{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:32px;
+  margin-top:30px;
+}
+
+/* FAQ */
+.faq{
+  max-width:900px;
+}
+
+.faq-item{
+  margin-bottom:22px;
+}
+
+/* FOOTER */
+footer{
+  background:rgba(255,255,255,.55);
+  padding:55px 10%;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:30px;
+}
+
+footer a{
+  display:block;
+  text-decoration:none;
+  color:#6a4f4f;
+  margin-bottom:6px;
+  cursor:pointer;
+}
+
+.footer-bottom{
+  text-align:center;
+  margin-top:35px;
+  font-size:.8rem;
+  color:#6a5a5a;
+}
+
+/* MODALS */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+}
+
+.modal-content{
+  background:#fff;
+  padding:30px;
+  border-radius:16px;
+  max-width:650px;
+  max-height:80vh;
+  overflow-y:auto;
+}
+
+.close{
+  display:inline-block;
+  margin-top:20px;
+  font-weight:600;
+  cursor:pointer;
+  color:#b05c5c;
+}
+
+/* COOKIE BAR */
+.cookie-bar{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:rgba(255,255,255,.95);
+  padding:14px 10%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:.85rem;
+  z-index:1500;
+}
+
+.cookie-bar button{
+  background:#b05c5c;
+  border:none;
+  color:white;
+  padding:6px 14px;
+  border-radius:14px;
+  cursor:pointer;
+}
+
+/* REVEAL */
+.reveal{
+  opacity:0;
+  transform:translateY(35px);
+  transition:.9s ease;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:none;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  h2{font-size:2.2rem}
+  .brand-name{font-size:1.6rem}
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="brand">
+    <div class="brand-name">To-Do’s</div>
+    <div class="brand-tagline">A calm way to organize tasks</div>
+  </div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#design">Design</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="login.html" class="auth-btn">Login</a></li>
+    <li><a href="signup.html" class="auth-btn">Sign Up</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="reveal">
+    <h2>Plan softly. Focus deeply.</h2>
+    <p>
+      To-Do’s is a thoughtfully designed task management website
+      that helps users organize daily responsibilities in a calm,
+      distraction-free environment.
+    </p>
+    <div class="info-line">
+      <span>Minimal interface</span>
+      <span>Task-focused design</span>
+      <span>Emotional clarity</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+<svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+<path d="M0,60 C200,100 400,20 600,60 800,100 1000,30 1200,60"
+      fill="none" stroke="#b98b8b" stroke-width="3"/>
+</svg>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <h3>About To-Do’s</h3>
+    <p>
+      To-Do’s was created with a simple belief — productivity should not feel heavy.
+      This website focuses on clarity, balance, and ease of use.
+    </p>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="reveal">
+    <h3>How the website works</h3>
+    <div class="flow">
+      <div>
+        <h4>User Login</h4>
+        <p>Users securely sign in to access their personal task space.</p>
+      </div>
+      <div>
+        <h4>Task Dashboard</h4>
+        <p>Tasks are shown in a clean and easy-to-read layout.</p>
+      </div>
+      <div>
+        <h4>Task Management</h4>
+        <p>Users can add, edit, complete, or remove tasks easily.</p>
+      </div>
+      <div>
+        <h4>Progress Tracking</h4>
+        <p>Completed tasks provide visual feedback and motivation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN -->
+<section id="design">
+  <div class="reveal">
+    <h3>Design Philosophy</h3>
+    <p>
+      Soft colors, rounded elements, and minimal layouts
+      reduce stress and improve focus.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="reveal faq">
+    <h3>Frequently Asked Questions</h3>
+
+    <div class="faq-item">
+      <h4>Is To-Do’s suitable for daily use?</h4>
+      <p>Yes. It is designed specifically for everyday task management.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Can tasks be edited later?</h4>
+      <p>Absolutely. Tasks can be modified, updated, or deleted at any time.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Is user data kept private?</h4>
+      <p>User data remains private and is never shared without consent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:hello@todos.app">hello@todos.app</a>
+    </div>
+    <div>
+      <h4>Social</h4>
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a onclick="openModal('privacy')">Privacy Policy</a>
+      <a onclick="openModal('terms')">Terms of Use</a>
+      <a onclick="openModal('cookies')">Cookie Policy</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    © 2025 To-Do’s — Designed with care and intention.
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div id="privacy" class="modal">
+  <div class="modal-content">
+    <h3>Privacy Policy</h3>
+    <p>Your data belongs to you and is never sold or misused.</p>
+    <span class="close" onclick="closeModal('privacy')">Close</span>
+  </div>
+</div>
+
+<div id="terms" class="modal">
+  <div class="modal-content">
+    <h3>Terms of Use</h3>
+    <p>Users agree to responsible and ethical use of the website.</p>
+    <span class="close" onclick="closeModal('terms')">Close</span>
+  </div>
+</div>
+
+<div id="cookies" class="modal">
+  <div class="modal-content">
+    <h3>Cookie Policy</h3>
+    <p>Cookies are used only to enhance user experience.</p>
+    <span class="close" onclick="closeModal('cookies')">Close</span>
+  </div>
+</div>
+
+<!-- COOKIE BAR -->
+<div class="cookie-bar" id="cookieBar">
+  <span>This site uses cookies to maintain a smooth experience.</span>
+  <button onclick="acceptCookies()">Accept</button>
+</div>
+
+<script>
+  
+document.querySelectorAll('.reveal').forEach(el=>{
+  const obs=new IntersectionObserver(e=>{
+    if(e[0].isIntersecting){el.classList.add('active')}
+  },{threshold:.2});
+  obs.observe(el);
+});
+
+function openModal(id){
+  document.getElementById(id).style.display='flex';
+}
+
+function closeModal(id){
+  document.getElementById(id).style.display='none';
+}
+
+function acceptCookies(){
+  document.getElementById('cookieBar').style.display='none';
+}
+</script>
+
+</body>
+</html>
