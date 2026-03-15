@@ -275,7 +275,7 @@ description:document.getElementById("descInput").value,
 deadline:document.getElementById("dateInput").value
 }
 
-await fetch("http://localhost:5000/api/tasks",{
+await fetch("https://todo-backend-lotq.onrender.com/api/tasks",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify(task)
@@ -294,7 +294,7 @@ async function loadTasks(){
 
 const userId=localStorage.getItem("userId")
 
-const res=await fetch(`http://localhost:5000/api/tasks/${userId}`)
+const res=await fetch(`https://todo-backend-lotq.onrender.com/api/tasks/${userId}`)
 
 let tasks=await res.json()
 
@@ -336,6 +336,7 @@ const today = new Date().toISOString().split("T")[0]
 if(t.deadline && t.deadline < today && !t.completed){
 li.classList.add("overdue")
 }
+
 if(t.completed){
 li.classList.add("done")
 }
@@ -364,7 +365,7 @@ list.appendChild(li)
 
 async function toggleComplete(id,status){
 
-await fetch(`http://localhost:5000/api/tasks/${id}`,{
+await fetch(`https://todo-backend-lotq.onrender.com/api/tasks/${id}`,{
 method:"PUT",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({completed:!status})
@@ -400,7 +401,7 @@ description:document.getElementById("editDesc").value,
 deadline:document.getElementById("editDate").value
 }
 
-await fetch(`http://localhost:5000/api/tasks/${editTaskId}`,{
+await fetch(`https://todo-backend-lotq.onrender.com/api/tasks/${editTaskId}`,{
 method:"PUT",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify(updatedTask)
@@ -427,7 +428,7 @@ document.getElementById("deleteModal").classList.add("hidden")
 
 async function confirmDelete(){
 
-await fetch(`http://localhost:5000/api/tasks/${deleteTaskId}`,{
+await fetch(`https://todo-backend-lotq.onrender.com/api/tasks/${deleteTaskId}`,{
 method:"DELETE"
 })
 
