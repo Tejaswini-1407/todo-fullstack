@@ -3,7 +3,7 @@ A simple full-stack **Task Management / Todo Application** that allows users to 
 The application supports adding tasks, editing them, deleting them, marking them as completed, and tracking progress.
 
 ## Live Demo
-Frontend: todo-frontend-cyan-theta.vercel.app
+Frontend: https://todo-frontend-cyan-theta.vercel.app/
 Backend API: https://todo-backend-lotq.onrender.com
 
 ## Features
